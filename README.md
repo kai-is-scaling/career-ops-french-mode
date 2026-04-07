@@ -1,6 +1,6 @@
 # Career-Ops
 
-**[:gb: English](#what-is-this)** | **[:es: Español](#es-versión-en-español)**
+**[:gb: English](#what-is-this)** | **[:es: Español](#es-versión-en-español)** | **[:fr: Francais](#fr-version-en-francais)**
 
 > AI-powered job search pipeline built on Claude Code. Evaluate offers, generate tailored CVs, scan portals, and track everything -- powered by AI agents.
 
@@ -315,6 +315,123 @@ O simplemente pega una URL o descripcion de oferta -- career-ops la detecta y ej
 - [ARCHITECTURE.md](docs/ARCHITECTURE.md) -- Como funciona el sistema
 
 ☕ [Invitame a un cafe](https://buymeacoffee.com/santifer) si career-ops te ayudo en tu busqueda.
+
+---
+
+# :fr: Version en Francais
+
+## C'est quoi
+
+Career-Ops transforme Claude Code en centre de commande pour ta recherche d'emploi. Au lieu de tracker tes candidatures dans un tableur, tu as un pipeline IA qui :
+
+- **Evalue les offres** avec un scoring structure A-F (10 dimensions ponderees)
+- **Genere des PDFs personnalises** -- CV ATS-optimises adaptes a chaque offre
+- **Scanne les portails** automatiquement (Greenhouse, Ashby, Lever, Welcome to the Jungle, APEC, sites carrieres)
+- **Traite en batch** -- evalue 10+ offres en parallele avec des sous-agents
+- **Tracke tout** dans une source de verite unique avec des controles d'integrite
+
+> **Important : Ceci N'EST PAS un outil de spam.** Career-ops est un filtre -- il t'aide a trouver les quelques offres qui meritent ton temps parmi des centaines. Le systeme deconseille fortement de postuler a tout ce qui est en dessous de 4.0/5. Ton temps est precieux, celui du recruteur aussi. Toujours relire avant d'envoyer.
+
+> **Attention : les premieres evaluations ne seront pas parfaites.** Le systeme ne te connait pas encore. Donne-lui du contexte -- ton CV, ton parcours, tes proof points, tes preferences, ce dans quoi tu excelles, ce que tu veux eviter. Plus tu le nourris, mieux il filtre. Vois ca comme l'onboarding d'un nouveau recruteur : la premiere semaine il a besoin d'apprendre a te connaitre, ensuite il devient indispensable.
+
+Construit par quelqu'un qui l'a utilise pour evaluer 740+ offres, generer 100+ CV personnalises et decrocher un poste de Head of Applied AI. [Lire le case study complet](https://santifer.io/career-ops).
+
+## Demarrage rapide
+
+```bash
+# 1. Cloner et installer
+git clone https://github.com/santifer/career-ops.git
+cd career-ops && npm install
+npx playwright install chromium   # Requis pour la generation de PDF
+
+# 2. Verifier le setup
+npm run doctor                     # Valide tous les prerequis
+
+# 3. Configurer
+cp config/profile.example.yml config/profile.yml  # Editer avec tes infos
+cp templates/portals.example.yml portals.yml       # Personnaliser les entreprises
+
+# 4. Ajouter ton CV
+# Creer cv.md a la racine du projet avec ton CV en markdown
+
+# 5. Activer les modes francais
+# Ajouter dans config/profile.yml :
+# language:
+#   primary: fr
+#   modes_dir: modes/fr
+
+# 6. Personnaliser avec Claude
+claude   # Ouvrir Claude Code dans ce repertoire
+
+# Demande a Claude d'adapter le systeme a toi :
+# "Change les archetypes pour des roles backend"
+# "Ajoute ces entreprises a portals.yml"
+# "Mets a jour mon profil avec ce CV que je te colle"
+
+# 7. Utiliser
+# Colle une URL d'offre ou lance /career-ops
+```
+
+> **Le systeme est concu pour que Claude le personnalise lui-meme.** Modes, archetypes, scoring, scripts de negociation -- il suffit de demander. Claude lit les memes fichiers qu'il utilise, il sait exactement quoi modifier.
+
+Guide complet dans [docs/SETUP.md](docs/SETUP.md).
+
+## Specificites du marche francais
+
+Les modes francais (`modes/fr/`) connaissent les particularites du marche francophone :
+
+| Element | Ce que le systeme sait faire |
+|---------|------------------------------|
+| **CDI / CDD** | Distingue les types de contrat, alerte si CDD pour un poste senior |
+| **Convention SYNTEC** | Verifie la classification et les minima salariaux |
+| **13e mois** | Integre automatiquement dans le calcul du brut annuel |
+| **RTT** | Compte comme avantage reel (equivalent 1-2 semaines de conges en plus) |
+| **Interessement / Participation** | Evalue l'historique (peut representer 1-3 mois de salaire) |
+| **Mutuelle / Prevoyance** | Verifie la couverture dans le package |
+| **Titres-restaurant** | Compte dans les avantages (~1000-1500 EUR/an) |
+| **Periode d'essai / Preavis** | Planifie les dates de demarrage en consequence |
+| **Portage salarial** | Connait cette alternative au freelance |
+| **Statut cadre** | Verifie si mentionne (quasi-standard en tech) |
+
+## Portails francophones supportes
+
+**Portails d'emploi :** Welcome to the Jungle, APEC, France Travail (ex-Pole emploi), Indeed FR, LinkedIn FR
+**Donnees salaires :** Glassdoor, WTTJ, Talent.io, APEC, Indeed Salaires
+
++ les 45+ entreprises internationales deja pre-configurees (Anthropic, OpenAI, Mistral, etc.)
+
+## Utilisation
+
+Career-ops est une seule slash command avec plusieurs modes :
+
+```
+/career-ops                → Afficher toutes les commandes
+/career-ops {colle une offre} → Pipeline complet (evaluer + PDF + tracker)
+/career-ops scan           → Scanner les portails
+/career-ops pdf            → Generer un CV ATS-optimise
+/career-ops batch          → Evaluer des offres en batch
+/career-ops tracker        → Voir le statut des candidatures
+/career-ops apply          → Remplir les formulaires avec l'IA
+/career-ops pipeline       → Traiter les URLs en attente
+/career-ops contacto       → Message LinkedIn outreach
+/career-ops deep           → Recherche approfondie sur une entreprise
+```
+
+Ou colle simplement une URL ou une description d'offre -- career-ops la detecte et lance le pipeline complet.
+
+## Aussi Open Source
+
+- **[cv-santiago](https://github.com/santifer/cv-santiago)** -- Le portfolio (santifer.io) avec chatbot IA, dashboard LLMOps et case studies. Si tu as besoin d'un portfolio pour accompagner ta recherche, forke-le et fais-en le tien.
+
+## Documentation
+
+- [SETUP.md](docs/SETUP.md) -- Guide d'installation
+- [CUSTOMIZATION.md](docs/CUSTOMIZATION.md) -- Comment personnaliser
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) -- Comment fonctionne le systeme
+
+:coffee: [Offre-moi un cafe](https://buymeacoffee.com/santifer) si career-ops t'a aide dans ta recherche.
+
+---
 
 ## Let's Connect
 
